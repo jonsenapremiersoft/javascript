@@ -102,7 +102,210 @@ const usuario = usuarios.find(user => user.id === 2);
 const posicaoUsuario = usuarios.findIndex(user => user.id === 2);
 ```
 
-## 4. Objeto Map
+
+## 4. Spread Operator (...)
+
+O Spread Operator é um recurso poderoso que permite "espalhar" elementos de um array ou objeto. É representado por três pontos (...) e tem diversos casos de uso úteis.
+
+### 4.1 Copiando Arrays
+
+```javascript
+// Fazendo uma cópia superficial de um array
+const frutas = ['maçã', 'banana', 'laranja'];
+const frutasCopia = [...frutas];
+
+// A cópia é independente do original
+frutas.push('manga');
+console.log(frutas);       // ['maçã', 'banana', 'laranja', 'manga']
+console.log(frutasCopia);  // ['maçã', 'banana', 'laranja']
+```
+
+### 4.2 Combinando Arrays
+
+```javascript
+// Unindo arrays
+const frutasVermelhas = ['morango', 'cereja'];
+const frutrasCitricas = ['laranja', 'limão'];
+const todasFrutas = [...frutasVermelhas, ...frutrasCitricas];
+
+// Adicionando elementos ao combinar
+const maisFrutas = [...frutasVermelhas, 'maçã', ...frutrasCitricas];
+```
+
+### 4.3 Passando Arrays como Argumentos
+
+```javascript
+// Usando spread para passar múltiplos argumentos
+const numeros = [1, 5, 2, 8, 3];
+
+// Sem spread operator
+console.log(Math.max(1, 5, 2, 8, 3));
+
+// Com spread operator
+console.log(Math.max(...numeros));
+
+// Exemplo prático: Função de registro de vendas
+function registrarVenda(data, vendedor, ...produtos) {
+    console.log(`Venda realizada em ${data} por ${vendedor}`);
+    produtos.forEach(produto => console.log(`- ${produto}`));
+}
+
+registrarVenda('2024-03-15', 'João', 'Notebook', 'Mouse', 'Teclado');
+```
+
+### 4.4 Casos de Uso Práticos
+
+#### Exemplo 1: Sistema de Carrinho de Compras
+```javascript
+const carrinhoAtual = [
+    { id: 1, nome: 'Produto A', preco: 50 },
+    { id: 2, nome: 'Produto B', preco: 30 }
+];
+
+// Adicionando novo produto mantendo imutabilidade
+const novoProduto = { id: 3, nome: 'Produto C', preco: 40 };
+const carrinhoAtualizado = [...carrinhoAtual, novoProduto];
+
+// Removendo um produto de forma imutável
+const carrinhoSemProdutoB = carrinhoAtual.filter(produto => produto.id !== 2);
+const carrinhoFinal = [...carrinhoSemProdutoB];
+```
+
+#### Exemplo 2: Gerenciamento de Estado
+```javascript
+const estadoInicial = {
+    usuarios: ['João', 'Maria'],
+    configuracoes: { tema: 'claro' }
+};
+
+// Atualizando estado de forma imutável
+const novoEstado = {
+    ...estadoInicial,
+    usuarios: [...estadoInicial.usuarios, 'Pedro']
+};
+```
+
+#### Exemplo 3: Mesclando Configurações
+```javascript
+const configPadrao = {
+    tema: 'claro',
+    idioma: 'pt-BR',
+    notifications: true
+};
+
+const configUsuario = {
+    tema: 'escuro',
+    tamanhoFonte: 'grande'
+};
+
+// Mesclando configurações, com preferência para configUsuario
+const configFinal = {
+    ...configPadrao,
+    ...configUsuario
+};
+```
+
+#### Exemplo 4: Manipulação de Formulários
+```javascript
+const dadosFormulario = {
+    nome: 'João',
+    email: 'joao@email.com'
+};
+
+// Atualizando apenas um campo
+const formAtualizado = {
+    ...dadosFormulario,
+    email: 'novo@email.com'
+};
+```
+
+### 4.5 Boas Práticas com Spread Operator
+
+1. **Imutabilidade**
+```javascript
+// ❌ Evite modificar arrays diretamente
+const array = [1, 2, 3];
+array.push(4);
+
+// ✅ Use spread para manter imutabilidade
+const array = [1, 2, 3];
+const novoArray = [...array, 4];
+```
+
+2. **Cópias Superficiais vs. Profundas**
+```javascript
+// ⚠️ Cuidado com objetos aninhados
+const usuario = {
+    nome: 'João',
+    endereco: { cidade: 'São Paulo' }
+};
+
+const usuarioCopia = { ...usuario };
+usuarioCopia.endereco.cidade = 'Rio'; // Modifica o objeto original também!
+
+// ✅ Para cópia profunda, considere:
+const usuarioCopiaCompleta = JSON.parse(JSON.stringify(usuario));
+// Ou use bibliotecas como lodash cloneDeep
+```
+
+3. **Performance**
+```javascript
+// ⚠️ Evite spread excessivo em loops
+const arrays = [[1, 2], [3, 4], [5, 6]];
+
+// ❌ Pode ser custoso com arrays grandes
+arrays.reduce((acc, curr) => [...acc, ...curr], []);
+
+// ✅ Melhor usar concat ou flat
+arrays.reduce((acc, curr) => acc.concat(curr), []);
+// ou
+arrays.flat();
+```
+
+### 4.6 Exercícios com Spread Operator
+
+1. **Exercício: Gerenciador de Tarefas**
+```javascript
+const tarefasIniciais = [
+    { id: 1, texto: 'Estudar JavaScript', concluida: false },
+    { id: 2, texto: 'Fazer exercícios', concluida: false }
+];
+
+// Tarefas:
+// 1. Adicione uma nova tarefa sem modificar o array original
+// 2. Marque uma tarefa como concluída mantendo imutabilidade
+// 3. Combine duas listas de tarefas diferentes
+// 4. Remova uma tarefa específica mantendo imutabilidade
+```
+
+2. **Exercício: Sistema de Reservas**
+```javascript
+const reservasAtuais = [
+    { id: 1, sala: 'A1', horario: '09:00' },
+    { id: 2, sala: 'B1', horario: '10:00' }
+];
+
+// Tarefas:
+// 1. Adicione uma nova reserva
+// 2. Atualize o horário de uma reserva existente
+// 3. Combine reservas de duas salas diferentes
+// 4. Crie uma função que aceite múltiplas reservas como argumentos
+```
+
+## 4.7 Notas Finais
+
+O Spread Operator é uma ferramenta poderosa que:
+- Facilita a manipulação de arrays e objetos de forma imutável
+- Torna o código mais limpo e legível
+- É essencial para programação funcional em JavaScript
+- Deve ser usado com consciência em relação à performance
+
+Lembre-se sempre de considerar:
+- A necessidade de cópias profundas vs. superficiais
+- O impacto na performance ao trabalhar com grandes conjuntos de dados
+- A legibilidade do código ao combinar múltiplos spreads
+
+## 5. Objeto Map
 
 O Map é uma estrutura de dados que permite armazenar pares de chave-valor, onde as chaves podem ser de qualquer tipo.
 
@@ -124,7 +327,7 @@ console.log(votacao.has('Candidato C')); // false
 votacao.delete('Candidato B');
 ```
 
-## 5. Boas Práticas
+## 6. Boas Práticas
 
 1. Sempre prefira métodos imutáveis (map, filter, reduce) em vez de modificar o array original
 2. Use nomes descritivos para suas variáveis e funções
@@ -146,7 +349,7 @@ const totalAcessorios = vendas
     .reduce((total, valor) => total + valor, 0);
 ```
 
-## 6. Exercícios Práticos
+## 7. Exercícios Práticos
 
 ### Exercício 1: Sistema de Biblioteca
 Crie um sistema que gerencie livros em uma biblioteca:
