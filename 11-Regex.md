@@ -94,5 +94,3 @@ console.log(novoTexto); // "O lato loeu a loupa do lei de loma"
 2. Use a flag `i` para busca case-insensitive
 3. Use a flag `m` para busca multilinha
 4. Teste suas regex em sites como regex101.com
-
-Quer praticar algum desses conceitos ou tem alguma dúvida específica?
