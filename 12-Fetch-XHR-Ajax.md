@@ -38,7 +38,7 @@ fetch('https://jsonplaceholder.typicode.com/posts', {
 .catch(error => console.error('Erro:', error));
 ```
 
-### Atualiza dados existentes
+### **PUT**: Atualiza dados existentes
    - Substitui completamente um recurso
 
 ```javascript
