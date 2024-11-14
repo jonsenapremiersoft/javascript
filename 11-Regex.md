@@ -37,7 +37,7 @@ Vamos ver como definir quantidades:
 ```javascript
 // * - 0 ou mais ocorrências
 let texto1 = "ca cat caat caaat";
-console.log(texto1.match(/ca*t/g)); // ['ct', 'cat', 'caat', 'caaat']
+console.log(texto1.match(/ca*t/g)); // ['cat', 'cat', 'caat', 'caaat']
 
 // + - 1 ou mais ocorrências
 console.log(texto1.match(/ca+t/g)); // ['cat', 'caat', 'caaat']
