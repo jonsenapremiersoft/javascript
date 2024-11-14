@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Posts - JSONPlaceholder API</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+</head>
+<body class="container mt-5">
+    <h1>Gerenciador de Posts</h1>
+    
+    <form id="postForm" class="mb-4">
+        <input type="hidden" id="postId">
+        <div class="mb-3">
+            <label for="title" class="form-label">Título:</label>
+            <input type="text" class="form-control" id="title" required>
+        </div>
+        <div class="mb-3">
+            <label for="body" class="form-label">Conteúdo:</label>
+            <textarea class="form-control" id="body" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Salvar Post</button>
+    </form>
+
+    <div id="posts" class="row"></div>
+
+    <script>
+        const API_URL = 'https://jsonplaceholder.typicode.com/posts';
+        
+        const postForm = document.getElementById('postForm');
+        const postsContainer = document.getElementById('posts');
+        const postIdInput = document.getElementById('postId');
+        const titleInput = document.getElementById('title');
+        const bodyInput = document.getElementById('body');
+
+        // CREATE - Criar novo post
+        async function createPost(postData) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ...postData,
+                        userId: 1 // JSONPlaceholder requer userId
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Erro ao criar post');
+                
+                const data = await response.json();
+                alert('Post criado com sucesso! (Simulado)');
+                return data;
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao criar post');
+            }
+        }
+
+        // READ - Buscar todos os posts
+        async function getPosts() {
+            try {
+                const response = await fetch(`${API_URL}?_limit=10`); // Limitando a 10 posts
+                if (!response.ok) throw new Error('Erro ao buscar posts');
+                
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao buscar posts');
+                return [];
+            }
+        }
+
+        // UPDATE - Atualizar post
+        async function updatePost(id, postData) {
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ...postData,
+                        userId: 1
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Erro ao atualizar post');
+                
+                const data = await response.json();
+                alert('Post atualizado com sucesso! (Simulado)');
+                return data;
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao atualizar post');
+            }
+        }
+
+        // DELETE - Remover post
+        async function deletePost(id) {
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (!response.ok) throw new Error('Erro ao deletar post');
+                
+                alert('Post deletado com sucesso! (Simulado)');
+                return true;
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao deletar post');
+                return false;
+            }
+        }
+
+        // Renderizar lista de posts
+        async function renderPosts() {
+            const posts = await getPosts();
+            postsContainer.innerHTML = '';
+            
+            posts.forEach(post => {
+                const div = document.createElement('div');
+                div.className = 'col-md-6 mb-4';
+                div.innerHTML = `
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">${post.title}</h5>
+                            <p class="card-text">${post.body}</p>
+                            <button onclick="editPost(${post.id})" class="btn btn-warning">Editar</button>
+                            <button onclick="confirmDelete(${post.id})" class="btn btn-danger">Excluir</button>
+                        </div>
+                    </div>
+                `;
+                postsContainer.appendChild(div);
+            });
+        }
+
+        // Carregar post para edição
+        async function editPost(id) {
+            const response = await fetch(`${API_URL}/${id}`);
+            const post = await response.json();
+            
+            postIdInput.value = post.id;
+            titleInput.value = post.title;
+            bodyInput.value = post.body;
+        }
+
+        // Confirmar exclusão
+        function confirmDelete(id) {
+            if (confirm('Tem certeza que deseja excluir este post?')) {
+                deletePost(id).then(success => {
+                    if (success) renderPosts();
+                });
+            }
+        }
+
+        // Event Listener do formulário
+        postForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const postData = {
+                title: titleInput.value,
+                body: bodyInput.value
+            };
+
+            if (postIdInput.value) {
+                await updatePost(postIdInput.value, postData);
+            } else {
+                await createPost(postData);
+            }
+
+            postForm.reset();
+            postIdInput.value = '';
+            renderPosts();
+        });
+
+        // Carregar posts iniciais
+        renderPosts();
+    </script>
+</body>
+</html>
