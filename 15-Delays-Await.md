@@ -152,6 +152,52 @@ const handleScroll = throttle(() => {
 // window.addEventListener('scroll', handleScroll);
 ```
 
+a. A função `throttle` é um controlador de frequência que limita quantas vezes uma função pode ser executada em um determinado período.
+
+b. Parâmetros:
+- `func`: A função que queremos controlar
+- `limit`: Tempo mínimo (em ms) entre execuções
+
+c. Funcionamento interno:
+```javascript
+let inThrottle; // Flag que controla se estamos no período de espera
+
+return function(...args) { // Função wrapper que será retornada
+    if (!inThrottle) { // Só executa se não estiver no período de espera
+        func.apply(this, args); // Executa a função original
+        inThrottle = true; // Ativa o período de espera
+        setTimeout(() => inThrottle = false, limit); // Agenda a liberação
+    }
+}
+```
+
+5. No exemplo de uso:
+```javascript
+const handleScroll = throttle(() => {
+    console.log("Evento de scroll processado");
+}, 1000);
+```
+- Se o usuário rolar a página 100 vezes em 1 segundo
+- O log só será exibido 1 vez
+- Novas chamadas durante o período de 1000ms são ignoradas
+- Após 1000ms, a função pode ser executada novamente
+
+Este padrão é útil para otimizar eventos frequentes como scroll, resize ou requisições à API.
+
+A principal diferença entre throttle e debounce:
+
+- Throttle:
+
+Garante que uma função seja executada no máximo uma vez a cada X milissegundos.
+Útil quando você precisa garantir uma taxa máxima de execução.
+Exemplo: limitar chamadas de API durante scroll.
+
+- Debounce:
+
+Só executa a função depois que o usuário para de chamar ela por X milissegundos.
+Agrupa várias chamadas em uma única execução.
+Exemplo: busca em tempo real enquanto usuário digita.
+
 ## 7. Dicas e Boas Práticas
 
 1. **Sempre limpe timeouts e intervalos:**
