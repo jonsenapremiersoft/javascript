@@ -18,6 +18,21 @@ Para resolver isso, a comunidade desenvolveu diferentes padrões de módulos:
 3. **Dependências**: Navegadores não resolvem automaticamente árvores de dependências
 4. **Compatibilidade**: Nem todos navegadores suportam ESModules nativamente
 
+### Como usar import no navegador?
+
+- O navegador suporta import apenas se o script for declarado como um módulo. Isso é feito usando o atributo type="module" na tag <script>:
+
+```html
+<script type="module">
+  import { algo } from './meu-modulo.js';
+  console.log(algo);
+</script>
+```
+
+### Restrições de segurança e origem cruzada
+- Para usar import no navegador, os módulos devem ser carregados de arquivos separados. O navegador bloqueia importações de módulos locais (file://) por razões de segurança, a menos que seja servido por um servidor HTTP(S).
+- Além disso, as importações precisam respeitar a política de mesma origem (CORS), o que significa que o módulo deve estar no mesmo domínio ou ser servido com permissões explícitas.
+
 ## Principais Bundlers
 
 ### Webpack
