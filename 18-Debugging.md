@@ -166,7 +166,6 @@ function calcularSalario(horasTrabalhadas, valorHora) {
 ### Vantagens do debugger
 - Pausa automática da execução
 - Permite inspeção de variáveis locais
-- Acesso ao call stack
 - Possibilidade de execução passo a passo
 - Avaliação de expressões no console durante a pausa
 
