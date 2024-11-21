@@ -15,10 +15,8 @@ Criar um sistema de gerenciamento de biblioteca usando Programação Orientada a
 3. `UI`: Controla a interface do usuário
 
 ## Desafios Extra
-1. Implementar classe `Usuario` para gerenciar empréstimos
-2. Adicionar classe `Emprestimo` com prazo de devolução
-3. Criar classe `Categoria` para classificação de livros
-4. Implementar sistema de busca e filtros
+1. Criar classe `Categoria` para classificação de livros
+2. Implementar sistema de busca e filtros
 
 ## Tecnologias
 - HTML5
